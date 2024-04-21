@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Random = System.Random;
 
@@ -17,7 +15,7 @@ public class LandGenerator : MonoBehaviour
    public int fillPercent;
    
    private int[,] map;
-
+   
    private void Start()
    {
       GenerateMap();
@@ -26,10 +24,10 @@ public class LandGenerator : MonoBehaviour
    void GenerateMap()
    {
       map = new int [width, height];
-      randomFillMap();
+      RandomFillMap();
    }
 
-   void randomFillMap()
+   private void RandomFillMap()
    {
       if (useRandomSeed)
       {
@@ -37,7 +35,7 @@ public class LandGenerator : MonoBehaviour
          seed = Time.time.ToString();
       }
 
-      System.Random pseudoRandom = new System.Random(seed.GetHashCode());
+      var pseudoRandom = new Random(seed.GetHashCode());
 
       for (int x = 0; x < width; x++)
       {
@@ -48,18 +46,24 @@ public class LandGenerator : MonoBehaviour
       }
    }
 
+   private void OnValidate()
+   {
+      GenerateMap();
+   }
+
    private void OnDrawGizmos()
    {
-      if (map != null)
+      if (map == null)
+         return;
+      
+      for (int x = 0; x < width; x++)
       {
-         for (int x = 0; x < width; x++)
+         for (int y = 0; y < height; y++)
          {
-            for (int y = 0; y < height; y++)
-            {
-               Gizmos.color = (map[x, y] == 1) ? Color.black : Color.white;
-               Vector3 pos = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.5f, 0);
-               Gizmos.DrawCube(pos, Vector3.one);
-            }
+            
+            Gizmos.color = (map[x, y] == 1) ? Color.black : Color.white;
+            Vector3 pos = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.5f, 0);
+            Gizmos.DrawCube(pos, Vector3.one);
          }
       }
    }
