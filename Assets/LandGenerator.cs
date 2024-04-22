@@ -25,6 +25,11 @@ public class LandGenerator : MonoBehaviour
    {
       map = new int [width, height];
       RandomFillMap();
+
+      for (int i = 0; i < 5; i++)
+      {
+         SmoothMap();
+      }
    }
 
    private void RandomFillMap()
@@ -58,6 +63,48 @@ public class LandGenerator : MonoBehaviour
       GenerateMap();
    }
 
+   void SmoothMap()
+   {
+      for (int x = 0; x < width; x++)
+      {
+         for (int y = 0; y < height; y++)
+         {
+            int neighborWaterTiles = GetSurroundingWaterCount(x, y);
+
+            if (neighborWaterTiles > 4)
+               map[x, y] = 1;
+            else if (neighborWaterTiles < 4)
+               map[x, y] = 0;
+         }
+      }
+   }
+
+   int GetSurroundingWaterCount(int gridX, int gridY)
+   {
+      int waterCount = 0;
+
+      for (int neighborX = gridX - 1; neighborX <= gridX + 1; neighborX++)
+      {
+         for (int neighborY = gridY - 1; neighborY <= gridY + 1; neighborY++)
+         {
+            if (neighborX >= 0 && neighborX < width && neighborY >= 0 && neighborY < height)
+            {
+               if (neighborX != gridX || neighborY != gridY)
+               {
+                  waterCount += map[neighborX, neighborY];
+               }
+            }
+            
+            else
+            {
+               waterCount++;
+            }
+         }
+      }
+
+      return waterCount;
+   }
+   
    private void OnDrawGizmos()
    {
       if (map == null)
