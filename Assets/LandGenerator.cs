@@ -10,9 +10,9 @@ public class LandGenerator : MonoBehaviour
    public string seed;
    public bool useRandomSeed;
    
-   //Determines the % of the map that will be land
+   //Determines the % of the map that will be water
    [Range(0, 100)]
-   public int fillPercent;
+   public int waterPercent;
    
    private int[,] map;
    
@@ -31,7 +31,6 @@ public class LandGenerator : MonoBehaviour
    {
       if (useRandomSeed)
       {
-         //figure out what happens here
          seed = Time.time.ToString();
       }
 
@@ -41,7 +40,15 @@ public class LandGenerator : MonoBehaviour
       {
          for (int y = 0; y < height; y++)
          {
-            map[x, y] = (pseudoRandom.Next(0, 100) < fillPercent) ? 1 : 0;
+            if (x == 0 || x == width - 1 || y == 0 || y == height - 1)
+            {
+               map[x, y] = 1;
+            }
+
+            else
+            {
+               map[x, y] = (pseudoRandom.Next(0, 100) < waterPercent) ? 1 : 0;
+            }
          }
       }
    }
@@ -61,10 +68,11 @@ public class LandGenerator : MonoBehaviour
          for (int y = 0; y < height; y++)
          {
             
-            Gizmos.color = (map[x, y] == 1) ? Color.black : Color.white;
-            Vector3 pos = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.5f, 0);
-            Gizmos.DrawCube(pos, Vector3.one);
+            Gizmos.color = (map[x, y] == 1) ? Color.blue : Color.green;
+            Vector2 pos = new Vector2(-width / 2 + x + 0.5f, -height / 2 + y + 0.5f);
+            Gizmos.DrawCube(pos, Vector2.one);
          }
       }
    }
 }
+
