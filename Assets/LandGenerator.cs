@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Random = System.Random;
 
 public class LandGenerator : MonoBehaviour
@@ -17,9 +18,33 @@ public class LandGenerator : MonoBehaviour
 
     private int[,] map;
 
+    public Tilemap waterTilemap;
+    public Tile waterTile;
+    public Tile grassTile;
+
     private void Start()
     {
         GenerateMap();
+        AddTiles();
+    }
+
+    void AddTiles()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (map[x, y] == 0)
+                {
+                    waterTilemap.SetTile(new Vector3Int(-width/2 + x, -height/2 + y, 0), grassTile);
+                }
+
+                else
+                {
+                    waterTilemap.SetTile(new Vector3Int(-width/2 + x, -height/2 + y, 0), waterTile);
+                }
+            }
+        }
     }
 
     void GenerateMap()
@@ -106,7 +131,7 @@ public class LandGenerator : MonoBehaviour
 
         return waterCount;
     }
-
+    
     private void OnDrawGizmos()
     {
         if (map == null)
