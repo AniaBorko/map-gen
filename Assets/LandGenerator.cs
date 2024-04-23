@@ -87,6 +87,7 @@ public class LandGenerator : MonoBehaviour
     private void OnValidate()
     {
         GenerateMap();
+        AddTiles();
     }
 
     void SmoothMap()
