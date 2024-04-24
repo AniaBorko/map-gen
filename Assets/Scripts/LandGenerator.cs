@@ -11,9 +11,12 @@ public class LandGenerator : MonoBehaviour
 
     public MapGenerator landGenerator = new MapGenerator();
     public MapGenerator treeGenerator = new MapGenerator();
+    public MapGenerator flowerGenerator = new MapGenerator();
 
     //Determines the % of the map that will be water
     [Range(0, 100)] public int treeDensity;
+    [Range(0, 100)] public int flowerDensity;
+    [Range(0, 100)] public int purpleFlowerPercent;
     [Range(0, 100)] public int orangeTreePercent;
     [Range(0, 100)] public int mushroomDensity;
 
@@ -21,6 +24,7 @@ public class LandGenerator : MonoBehaviour
     private int[,] treeMap;
     private int[,] perlinMap;
     private int[,] mushroomMap;
+    private int[,] flowerMap;
     private int[,] wholeMap;
 
     [Range(0.01f, 0.25f)] public float modifier = 0.01f;
@@ -33,6 +37,8 @@ public class LandGenerator : MonoBehaviour
     public GameObject greenTree;
     public GameObject orangeTree;
     public GameObject toadstool;
+    public GameObject blueFlower;
+    public GameObject purpleFlower;
     private GameObject mapPropsContainer;
 
     [ContextMenu("Generate Map")]
@@ -41,7 +47,8 @@ public class LandGenerator : MonoBehaviour
         GenerateRandomProperties();
         GenerateStructureMaps();
 
-        AdjustPerlinMap(treeMap);
+        AdjustMap(treeMap, 2, 3);
+        AdjustMap(flowerMap, 2, 4);
         CombineMaps();
         AddTiles();
         AddProps();
@@ -51,6 +58,7 @@ public class LandGenerator : MonoBehaviour
     {
         landMap = landGenerator.GenerateMap(width, height);
         treeMap = treeGenerator.GenerateMap(width, height);
+        flowerMap = flowerGenerator.GenerateMap(width, height);
         //perlinMap = PerlinNoiseMap.GenerateMap(width, height, modifier);
     }
 
@@ -60,7 +68,7 @@ public class LandGenerator : MonoBehaviour
             modifier = UnityEngine.Random.Range(0.01f, 0.25f);
     }
 
-    private static void AdjustPerlinMap(int[,] map)
+    private static void AdjustMap(int[,] map, int clearTile, int occupiedTile)
     {
         var width = map.GetUpperBound(0);
         var height = map.GetUpperBound(1);
@@ -70,12 +78,12 @@ public class LandGenerator : MonoBehaviour
             {
                 if (map[x, y] == 0)
                 {
-                    map[x, y] = 2;
+                    map[x, y] = clearTile;
                 }
 
                 if (map[x, y] == 1)
                 {
-                    map[x, y] = 3;
+                    map[x, y] = occupiedTile;
                 }
             }
         }
@@ -94,6 +102,11 @@ public class LandGenerator : MonoBehaviour
                     landMap[x, y] = treeMap[x, y];
                     wholeMap[x, y] = landMap[x, y];
                 }
+
+                if (wholeMap[x, y] == 2)
+                {
+                    wholeMap[x, y] = flowerMap[x, y];
+                }
             }
         }
     }
@@ -105,7 +118,7 @@ public class LandGenerator : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                if (wholeMap[x, y] == 2 || wholeMap[x, y] == 3)
+                if (wholeMap[x, y] == 2 || wholeMap[x, y] == 3 || wholeMap[x, y] == 4)
                 {
                     tilemap.SetTile(new Vector3Int(-width / 2 + x, -height / 2 + y, 0), grassTile);
                 }
@@ -129,6 +142,7 @@ public class LandGenerator : MonoBehaviour
 
         AddTrees();
         AddMushrooms();
+        AddFlowers();
     }
 
     void AddTrees()
@@ -186,5 +200,39 @@ public class LandGenerator : MonoBehaviour
             }
         }
 
+    }
+
+    void AddFlowers()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (wholeMap[x, y] == 4)
+                {
+                    Random flowerDensityRandom = new Random();
+                    Random purpleFlowerRandom = new Random();
+
+                    if (flowerDensityRandom.Next(0, 100) < flowerDensity)
+                    {
+                        Vector3 flowerPosition = new Vector3(-width / 2 + x + 0.7f, -height / 2 + y + 0.9f, 0);
+
+                        if (purpleFlowerRandom.Next(0, 100) < purpleFlowerPercent)
+                        {
+                            GameObject flower = Instantiate(purpleFlower, flowerPosition, Quaternion.identity,
+                                mapPropsContainer.transform);
+                            flower.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                        }
+
+                        else
+                        {
+                            GameObject flower = Instantiate(blueFlower, flowerPosition, Quaternion.identity,
+                                mapPropsContainer.transform);
+                            flower.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
