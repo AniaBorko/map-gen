@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Random = System.Random;
 
@@ -8,17 +9,10 @@ public class LandGenerator : MonoBehaviour
     public int width;
     public int height;
 
-    public int landSeed;
-    public int treeSeed;
-    public bool useRandomLandSeed;
-    public bool uesRandomTreeSeed;
-
-    [SerializeField] private int landSmoothingSteps;
-    [SerializeField] private int treeSmoothingSteps;
+    public MapGenerator landGenerator = new MapGenerator();
+    public MapGenerator treeGenerator = new MapGenerator();
 
     //Determines the % of the map that will be water
-    [Range(0, 100)] public int waterPercent;
-    [Range(0, 100)] public int treePercent;
     [Range(0, 100)] public int treeDensity;
     [Range(0, 100)] public int orangeTreePercent;
     [Range(0, 100)] public int mushroomDensity;
@@ -55,17 +49,13 @@ public class LandGenerator : MonoBehaviour
 
     private void GenerateStructureMaps()
     {
-        landMap = CellularAutomataMap.GenerateMap(width, height, landSeed, waterPercent, landSmoothingSteps);
-        treeMap = CellularAutomataMap.GenerateMap(width, height, treeSeed, treePercent, treeSmoothingSteps);
+        landMap = landGenerator.GenerateMap(width, height);
+        treeMap = treeGenerator.GenerateMap(width, height);
         //perlinMap = PerlinNoiseMap.GenerateMap(width, height, modifier);
     }
 
     private void GenerateRandomProperties()
     {
-        if (useRandomLandSeed)
-            landSeed = UnityEngine.Random.Range(0, 1000);
-        if (uesRandomTreeSeed)
-            treeSeed = UnityEngine.Random.Range(0, 1000);
         if (useRandomModifier)
             modifier = UnityEngine.Random.Range(0.01f, 0.25f);
     }

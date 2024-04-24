@@ -199,12 +199,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 80
   height: 50
-  seed: 0
-  useRandomSeed: 0
-  smoothingSteps: 6
+  landSeed: 0
+  treeSeed: 0
+  useRandomLandSeed: 1
+  uesRandomTreeSeed: 1
+  landSmoothingSteps: 6
+  treeSmoothingSteps: 6
   waterPercent: 41
-  treeDensity: 100
-  orangeTreePercent: 24
+  treePercent: 41
+  treeDensity: 77
+  orangeTreePercent: 25
+  mushroomDensity: 1
   modifier: 0.053580217
   useRandomModifier: 1
   tilemap: {fileID: 616893016}
@@ -212,6 +217,7 @@ MonoBehaviour:
   grassTile: {fileID: 11400000, guid: d3a23a6fabc824562bcf597bf0dba5a7, type: 2}
   greenTree: {fileID: 5745786294694002941, guid: 61662b6a561634fc784c89d7850f3777, type: 3}
   orangeTree: {fileID: 5242416956531956789, guid: bdcc91566ea534302841235831846c9a, type: 3}
+  toadstool: {fileID: 8343487810042602599, guid: 7d3b02469acf74910b2688186fdace3a, type: 3}
 --- !u!4 &512778900
 Transform:
   m_ObjectHideFlags: 0
@@ -376,7 +382,7 @@ GameObject:
   - component: {fileID: 616893016}
   - component: {fileID: 616893015}
   m_Layer: 0
-  m_Name: Tilemap
+  m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
