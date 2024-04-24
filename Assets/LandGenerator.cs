@@ -120,7 +120,7 @@ public class LandGenerator : MonoBehaviour
 
                     if (random.Next(0, 100) < treeDensity)
                     {
-                        Vector3 treePosition = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.5f, 0);
+                        Vector3 treePosition = new Vector3(-width / 2 + x + 0.7f, -height / 2 + y + 0.9f, 0);
 
                         if (orangeTreeRandom.Next(0, 100) < orangeTreePercent)
                         {
