@@ -35,17 +35,26 @@ public class LandGenerator : MonoBehaviour
     [ContextMenu("Generate Map")]
     private void Start()
     {
-        if (useRandomSeed)
-            seed = UnityEngine.Random.Range(0, 1000);
-        if (useRandomModifier)
-            modifier = UnityEngine.Random.Range(0.01f, 0.25f);
-
-        caMap = CellularAutomataMap.GenerateMap(width, height, seed, waterPercent, smoothingSteps);
-        perlinMap = PerlinNoiseMap.GenerateMap(width, height, modifier);
+        GenerateRandomProperties();
+        GenerateStructureMaps();
 
         AdjustPerlinMap(perlinMap);
         CombineMaps();
         CreateWorldMap();
+    }
+
+    private void GenerateStructureMaps()
+    {
+        caMap = CellularAutomataMap.GenerateMap(width, height, seed, waterPercent, smoothingSteps);
+        perlinMap = PerlinNoiseMap.GenerateMap(width, height, modifier);
+    }
+
+    private void GenerateRandomProperties()
+    {
+        if (useRandomSeed)
+            seed = UnityEngine.Random.Range(0, 1000);
+        if (useRandomModifier)
+            modifier = UnityEngine.Random.Range(0.01f, 0.25f);
     }
 
     private static void AdjustPerlinMap(int[,] map)
