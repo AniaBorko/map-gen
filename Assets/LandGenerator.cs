@@ -19,14 +19,15 @@ public class LandGenerator : MonoBehaviour
     private int[,] map;
     private int[,] perlinMap;
 
-    public float modifier;
+    [Range(0.01f, 0.25f)] public float modifier = 0.01f;
+    public bool useRandomModifier;
 
     public Tilemap waterTilemap;
     public Tile waterTile;
     public Tile grassTile;
     public Tile flowerTile;
 
-    public Sprite tree;
+    public GameObject tree;
     
 
     private void Start()
@@ -40,9 +41,15 @@ public class LandGenerator : MonoBehaviour
 
    private void GeneratePerlinMap()
     {
+        if (useRandomModifier)
+        {
+            modifier = UnityEngine.Random.Range(0.01f, 0.25f);
+        }
+        
+        
+        
         perlinMap = new int[width, height];
-        int newPoint; 
-        modifier = UnityEngine.Random.Range(0.01f, 0.25f);
+        int newPoint;
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -88,6 +95,7 @@ public class LandGenerator : MonoBehaviour
 
     private void AddTiles()
     {
+        waterTilemap.ClearAllTiles();
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -104,7 +112,10 @@ public class LandGenerator : MonoBehaviour
 
                 else if (map[x, y] == 3)
                 {
-                    waterTilemap.SetTile(new Vector3Int(-width/2 + x, -height/2 + y, 0), flowerTile);
+                    waterTilemap.SetTile(new Vector3Int(-width / 2 + x, -height / 2 + y, 0), grassTile);
+                    Vector3 treePosition = new Vector3(-width / 2 + x +0.5f, -height / 2 + y +0.5f, 0);
+                    GameObject clone = Instantiate(tree, treePosition, Quaternion.identity);
+                    clone.GetComponent<SpriteRenderer>().sortingOrder = 2;
                 }
             }
         }
