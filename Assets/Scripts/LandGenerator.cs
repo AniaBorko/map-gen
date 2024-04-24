@@ -19,11 +19,13 @@ public class LandGenerator : MonoBehaviour
     [Range(0, 100)] public int purpleFlowerPercent;
     [Range(0, 100)] public int orangeTreePercent;
     [Range(0, 100)] public int mushroomDensity;
+    [Range(0, 100)] public int stumpDensity;
 
     private int[,] landMap;
     private int[,] treeMap;
     private int[,] perlinMap;
     private int[,] mushroomMap;
+    private int[,] stumpMap;
     private int[,] flowerMap;
     private int[,] wholeMap;
 
@@ -37,6 +39,7 @@ public class LandGenerator : MonoBehaviour
     public GameObject greenTree;
     public GameObject orangeTree;
     public GameObject toadstool;
+    public GameObject stump;
     public GameObject blueFlower;
     public GameObject purpleFlower;
     private GameObject mapPropsContainer;
@@ -97,12 +100,13 @@ public class LandGenerator : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
+                //for tiles that are land it adds the possibility of trees
                 if (landMap[x, y] == 0)
                 {
                     landMap[x, y] = treeMap[x, y];
                     wholeMap[x, y] = landMap[x, y];
                 }
-
+                //for tiles that are empty land it adds the possibility of flowers
                 if (wholeMap[x, y] == 2)
                 {
                     wholeMap[x, y] = flowerMap[x, y];
@@ -142,6 +146,7 @@ public class LandGenerator : MonoBehaviour
 
         AddTrees();
         AddMushrooms();
+        AddStumps();
         AddFlowers();
     }
 
@@ -178,7 +183,7 @@ public class LandGenerator : MonoBehaviour
             }
         }
     }
-
+    
     void AddMushrooms()
     {
         mushroomMap = new int[width, height];
@@ -200,6 +205,28 @@ public class LandGenerator : MonoBehaviour
             }
         }
 
+    }
+    
+    void AddStumps()
+    {
+        stumpMap = new int[width, height];
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Random stumpDensityRandom = new Random();
+                stumpMap[x, y] = (stumpDensityRandom.Next(0, 100) < stumpDensity) ? 1 : 0;
+
+                if (stumpMap[x, y] == 1 && wholeMap[x, y] == 2 && mushroomMap[x, y] == 0)
+                {
+                    Vector3 stumpPosition = new Vector3(-width / 2 + x + 0.7f, -height / 2 + y + 0.9f, 0);
+                    GameObject stumpTree = Instantiate(stump, stumpPosition, Quaternion.identity,
+                        mapPropsContainer.transform);
+                    stumpTree.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                }
+            }
+        }
     }
 
     void AddFlowers()

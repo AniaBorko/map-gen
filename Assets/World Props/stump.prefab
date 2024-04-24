@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8115168898603055380}
   - component: {fileID: 9005573610064561032}
   m_Layer: 0
-  m_Name: roguelikeSheet_transparent_1161
+  m_Name: stump
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
