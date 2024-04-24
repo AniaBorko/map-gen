@@ -20,6 +20,7 @@ public class LandGenerator : MonoBehaviour
 
     private int[,] caMap;
     private int[,] perlinMap;
+    private int[,] wholeMap;
 
     [Range(0.01f, 0.25f)] public float modifier = 0.01f;
     public bool useRandomModifier;
@@ -40,7 +41,8 @@ public class LandGenerator : MonoBehaviour
 
         AdjustPerlinMap(perlinMap);
         CombineMaps();
-        CreateWorldMap();
+        AddTiles();
+        AddProps();
     }
 
     private void GenerateStructureMaps()
@@ -80,6 +82,8 @@ public class LandGenerator : MonoBehaviour
 
     private void CombineMaps()
     {
+        wholeMap = new int[width, height];
+        
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -87,26 +91,20 @@ public class LandGenerator : MonoBehaviour
                 if (caMap[x, y] == 0)
                 {
                     caMap[x, y] = perlinMap[x, y];
+                    wholeMap[x, y] = caMap[x, y];
                 }
             }
         }
     }
 
-    private void CreateWorldMap()
+    private void AddTiles()
     {
-        if (mapPropsContainer != null)
-        {
-            Destroy(mapPropsContainer);
-        }
-
-        mapPropsContainer = new GameObject("Map Props");
-
         tilemap.ClearAllTiles();
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                if (caMap[x, y] == 2 || caMap[x, y] == 3)
+                if (wholeMap[x, y] == 2 || wholeMap[x, y] == 3)
                 {
                     tilemap.SetTile(new Vector3Int(-width / 2 + x, -height / 2 + y, 0), grassTile);
                 }
@@ -115,29 +113,49 @@ public class LandGenerator : MonoBehaviour
                 {
                     tilemap.SetTile(new Vector3Int(-width / 2 + x, -height / 2 + y, 0), waterTile);
                 }
+            }
+        }
+    }
 
-                if (caMap[x, y] == 3)
+    private void AddProps()
+    {
+        if (mapPropsContainer != null)
+        {
+            Destroy(mapPropsContainer);
+        }
+
+        mapPropsContainer = new GameObject("Map Props");
+
+        AddTrees();
+    }
+
+    void AddTrees()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (wholeMap[x, y] == 3)
                 {
-                    tilemap.SetTile(new Vector3Int(-width / 2 + x, -height / 2 + y, 0), grassTile);
-                    Random random = new Random();
+                    Random treeDensityRandom = new Random();
                     Random orangeTreeRandom = new Random();
 
-                    if (random.Next(0, 100) < treeDensity)
+                    if (treeDensityRandom.Next(0, 100) < treeDensity)
                     {
                         Vector3 treePosition = new Vector3(-width / 2 + x + 0.7f, -height / 2 + y + 0.9f, 0);
 
                         if (orangeTreeRandom.Next(0, 100) < orangeTreePercent)
                         {
-                            GameObject orangeClone = Instantiate(orangeTree, treePosition, Quaternion.identity,
+                            GameObject tree = Instantiate(orangeTree, treePosition, Quaternion.identity,
                                 mapPropsContainer.transform);
-                            orangeClone.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                            tree.GetComponent<SpriteRenderer>().sortingOrder = 2;
                         }
 
                         else
                         {
-                            GameObject clone = Instantiate(greenTree, treePosition, Quaternion.identity,
+                            GameObject tree = Instantiate(greenTree, treePosition, Quaternion.identity,
                                 mapPropsContainer.transform);
-                            clone.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                            tree.GetComponent<SpriteRenderer>().sortingOrder = 2;
                         }
                     }
                 }
