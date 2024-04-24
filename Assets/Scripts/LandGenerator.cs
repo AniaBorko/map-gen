@@ -17,9 +17,11 @@ public class LandGenerator : MonoBehaviour
     [Range(0, 100)] public int waterPercent;
     [Range(0, 100)] public int treeDensity;
     [Range(0, 100)] public int orangeTreePercent;
+    [Range(0, 100)] public int mushroomDensity;
 
-    private int[,] caMap;
+    private int[,] landMap;
     private int[,] perlinMap;
+    private int[,] mushroomMap;
     private int[,] wholeMap;
 
     [Range(0.01f, 0.25f)] public float modifier = 0.01f;
@@ -31,6 +33,7 @@ public class LandGenerator : MonoBehaviour
 
     public GameObject greenTree;
     public GameObject orangeTree;
+    public GameObject toadstool;
     private GameObject mapPropsContainer;
 
     [ContextMenu("Generate Map")]
@@ -47,7 +50,7 @@ public class LandGenerator : MonoBehaviour
 
     private void GenerateStructureMaps()
     {
-        caMap = CellularAutomataMap.GenerateMap(width, height, seed, waterPercent, smoothingSteps);
+        landMap = CellularAutomataMap.GenerateMap(width, height, seed, waterPercent, smoothingSteps);
         perlinMap = PerlinNoiseMap.GenerateMap(width, height, modifier);
     }
 
@@ -88,10 +91,10 @@ public class LandGenerator : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                if (caMap[x, y] == 0)
+                if (landMap[x, y] == 0)
                 {
-                    caMap[x, y] = perlinMap[x, y];
-                    wholeMap[x, y] = caMap[x, y];
+                    landMap[x, y] = perlinMap[x, y];
+                    wholeMap[x, y] = landMap[x, y];
                 }
             }
         }
@@ -127,6 +130,7 @@ public class LandGenerator : MonoBehaviour
         mapPropsContainer = new GameObject("Map Props");
 
         AddTrees();
+        AddMushrooms();
     }
 
     void AddTrees()
@@ -161,5 +165,28 @@ public class LandGenerator : MonoBehaviour
                 }
             }
         }
+    }
+
+    void AddMushrooms()
+    {
+        mushroomMap = new int[width, height];
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Random mushroomDensityRandom = new Random();
+                mushroomMap[x, y] = (mushroomDensityRandom.Next(0, 100) < mushroomDensity) ? 1 : 0;
+
+                if (mushroomMap[x, y] == 1 && wholeMap[x, y] == 2)
+                {
+                    Vector3 mushroomPosition = new Vector3(-width / 2 + x + 0.7f, -height / 2 + y + 0.9f, 0);
+                    GameObject mushroom = Instantiate(toadstool, mushroomPosition, Quaternion.identity,
+                        mapPropsContainer.transform);
+                    mushroom.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                }
+            }
+        }
+
     }
 }
