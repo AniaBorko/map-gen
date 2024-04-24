@@ -8,18 +8,23 @@ public class LandGenerator : MonoBehaviour
     public int width;
     public int height;
 
-    public int seed;
-    public bool useRandomSeed;
+    public int landSeed;
+    public int treeSeed;
+    public bool useRandomLandSeed;
+    public bool uesRandomTreeSeed;
 
-    [SerializeField] private int smoothingSteps;
+    [SerializeField] private int landSmoothingSteps;
+    [SerializeField] private int treeSmoothingSteps;
 
     //Determines the % of the map that will be water
     [Range(0, 100)] public int waterPercent;
+    [Range(0, 100)] public int treePercent;
     [Range(0, 100)] public int treeDensity;
     [Range(0, 100)] public int orangeTreePercent;
     [Range(0, 100)] public int mushroomDensity;
 
     private int[,] landMap;
+    private int[,] treeMap;
     private int[,] perlinMap;
     private int[,] mushroomMap;
     private int[,] wholeMap;
@@ -42,7 +47,7 @@ public class LandGenerator : MonoBehaviour
         GenerateRandomProperties();
         GenerateStructureMaps();
 
-        AdjustPerlinMap(perlinMap);
+        AdjustPerlinMap(treeMap);
         CombineMaps();
         AddTiles();
         AddProps();
@@ -50,14 +55,17 @@ public class LandGenerator : MonoBehaviour
 
     private void GenerateStructureMaps()
     {
-        landMap = CellularAutomataMap.GenerateMap(width, height, seed, waterPercent, smoothingSteps);
-        perlinMap = PerlinNoiseMap.GenerateMap(width, height, modifier);
+        landMap = CellularAutomataMap.GenerateMap(width, height, landSeed, waterPercent, landSmoothingSteps);
+        treeMap = CellularAutomataMap.GenerateMap(width, height, treeSeed, treePercent, treeSmoothingSteps);
+        //perlinMap = PerlinNoiseMap.GenerateMap(width, height, modifier);
     }
 
     private void GenerateRandomProperties()
     {
-        if (useRandomSeed)
-            seed = UnityEngine.Random.Range(0, 1000);
+        if (useRandomLandSeed)
+            landSeed = UnityEngine.Random.Range(0, 1000);
+        if (uesRandomTreeSeed)
+            treeSeed = UnityEngine.Random.Range(0, 1000);
         if (useRandomModifier)
             modifier = UnityEngine.Random.Range(0.01f, 0.25f);
     }
@@ -93,7 +101,7 @@ public class LandGenerator : MonoBehaviour
             {
                 if (landMap[x, y] == 0)
                 {
-                    landMap[x, y] = perlinMap[x, y];
+                    landMap[x, y] = treeMap[x, y];
                     wholeMap[x, y] = landMap[x, y];
                 }
             }
