@@ -15,6 +15,8 @@ public class LandGenerator : MonoBehaviour
     
     //Determines the % of the map that will be water
     [Range(0, 100)] public int waterPercent;
+    [Range(0, 100)] public int treeDensity;
+    [Range(0, 100)] public int orangeTreePercent;
 
     private int[,] map;
     private int[,] perlinMap;
@@ -28,6 +30,7 @@ public class LandGenerator : MonoBehaviour
     public Tile flowerTile;
 
     public GameObject tree;
+    public GameObject orangeTree;
     
 
     private void Start()
@@ -113,9 +116,25 @@ public class LandGenerator : MonoBehaviour
                 else if (map[x, y] == 3)
                 {
                     waterTilemap.SetTile(new Vector3Int(-width / 2 + x, -height / 2 + y, 0), grassTile);
-                    Vector3 treePosition = new Vector3(-width / 2 + x +0.5f, -height / 2 + y +0.5f, 0);
-                    GameObject clone = Instantiate(tree, treePosition, Quaternion.identity);
-                    clone.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                    Random random = new Random();
+                    Random orangeTreeRandom = new Random();
+
+                    if (random.Next(0, 100) < treeDensity)
+                    {
+                        Vector3 treePosition = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.5f, 0);
+
+                        if (orangeTreeRandom.Next(0, 100) < orangeTreePercent)
+                        {
+                            GameObject orangeClone = Instantiate(orangeTree, treePosition, Quaternion.identity);
+                            orangeClone.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                        }
+
+                        else
+                        {
+                            GameObject clone = Instantiate(tree, treePosition, Quaternion.identity);
+                            clone.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                        }
+                    }
                 }
             }
         }
