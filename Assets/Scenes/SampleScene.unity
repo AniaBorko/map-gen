@@ -199,17 +199,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 80
   height: 50
-  landSeed: 0
-  treeSeed: 0
-  useRandomLandSeed: 1
-  uesRandomTreeSeed: 1
-  landSmoothingSteps: 6
-  treeSmoothingSteps: 6
-  waterPercent: 41
-  treePercent: 41
+  landGenerator:
+    seed: 0
+    useRandomSeed: 1
+    smoothingSteps: 6
+    backgroundPercent: 37
+  treeGenerator:
+    seed: 0
+    useRandomSeed: 1
+    smoothingSteps: 6
+    backgroundPercent: 41
+  flowerGenerator:
+    seed: 0
+    useRandomSeed: 1
+    smoothingSteps: 6
+    backgroundPercent: 31
   treeDensity: 77
+  flowerDensity: 78
+  purpleFlowerPercent: 25
   orangeTreePercent: 25
   mushroomDensity: 1
+  stumpDensity: 1
   modifier: 0.053580217
   useRandomModifier: 1
   tilemap: {fileID: 616893016}
@@ -218,6 +228,9 @@ MonoBehaviour:
   greenTree: {fileID: 5745786294694002941, guid: 61662b6a561634fc784c89d7850f3777, type: 3}
   orangeTree: {fileID: 5242416956531956789, guid: bdcc91566ea534302841235831846c9a, type: 3}
   toadstool: {fileID: 8343487810042602599, guid: 7d3b02469acf74910b2688186fdace3a, type: 3}
+  stump: {fileID: 5176847717203166853, guid: 716945992650c4d96af387f29c36dca7, type: 3}
+  blueFlower: {fileID: 6373199148086102382, guid: 056f38bc72a5d475887ac8e32441a531, type: 3}
+  purpleFlower: {fileID: 4317672650426008773, guid: fdb85500a47db4b1b9ab81b15fc8f4b8, type: 3}
 --- !u!4 &512778900
 Transform:
   m_ObjectHideFlags: 0
