@@ -33,8 +33,8 @@ public class LandGenerator : MonoBehaviour
     public bool useRandomModifier;
 
     public Tilemap tilemap;
-    public Tile waterTile;
-    public Tile grassTile;
+    public TileBase waterTile;
+    public TileBase grassTile;
 
     public GameObject greenTree;
     public GameObject orangeTree;
