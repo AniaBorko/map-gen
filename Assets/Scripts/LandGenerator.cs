@@ -118,9 +118,21 @@ public class LandGenerator : MonoBehaviour
                         GameObject tree = Instantiate(prefab, transform);
                         tree.transform.parent = mapPropsContainer.transform;
                         tree.transform.position = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.5f, 0);
+                        tree.transform.localScale = Vector3.one * 0.7f;
+                        tree.GetComponent<SpriteRenderer>().sortingOrder = 4;
+                        float v2 = UnityEngine.Random.Range(0f, treeDensity);
+                        if (TreePerlinMap[x, y] < v2/2)
+                        {
+                            GameObject prefab2 = treePrefabs[UnityEngine.Random.Range(0, treePrefabs.Length)];
+                            GameObject tree2 = Instantiate(prefab2, transform);
+                            tree2.transform.parent = mapPropsContainer.transform;
+                            tree2.transform.position = new Vector3(-width / 2 + x + 0.8f, -height / 2 + y + 0.8f, 0);
+                            tree2.transform.localScale = Vector3.one * 0.7f;
+                            tree2.GetComponent<SpriteRenderer>().sortingOrder = 3;
+                        }
+
                         //make it occupied
                         landMap[x, y] = 2;
-                        tree.GetComponent<SpriteRenderer>().sortingOrder = 2;
                     }
                 }
             }
@@ -142,9 +154,33 @@ public class LandGenerator : MonoBehaviour
                         GameObject flower = Instantiate(prefab, transform);
                         flower.transform.parent = mapPropsContainer.transform;
                         flower.transform.position = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.5f, 0);
+                        flower.transform.localScale = Vector3.one * 0.7f;
+                        flower.GetComponent<SpriteRenderer>().sortingOrder = 1;
+                        
+                        float v2 = UnityEngine.Random.Range(0f, flowerDensity);
+                        if (FlowerPerlinMap[x, y] < v2/2)
+                        {
+                            GameObject prefab2 = flowerPrefabs[UnityEngine.Random.Range(0, flowerPrefabs.Length)];
+                            GameObject flower2 = Instantiate(prefab2, transform);
+                            flower2.transform.parent = mapPropsContainer.transform;
+                            flower2.transform.position = new Vector3(-width / 2 + x + 0.7f, -height / 2 + y + 0.3f, 0);
+                            flower2.transform.localScale = Vector3.one * 0.7f;
+                            flower2.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                            
+                            float v3 = UnityEngine.Random.Range(0f, flowerDensity);
+                            if (FlowerPerlinMap[x, y] < v3)
+                            {
+                                GameObject prefab3 = flowerPrefabs[UnityEngine.Random.Range(0, flowerPrefabs.Length)];
+                                GameObject flower3 = Instantiate(prefab3, transform);
+                                flower3.transform.parent = mapPropsContainer.transform;
+                                flower3.transform.position = new Vector3(-width / 2 + x + 0.2f, -height / 2 + y + 0.3f, 0);
+                                flower3.transform.localScale = Vector3.one * 0.7f;
+                                flower3.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                            }
+                        }
+                        
                         //make it occupied
                         landMap[x, y] = 2;
-                        flower.GetComponent<SpriteRenderer>().sortingOrder = 2;
                     }
                 }
             }
@@ -166,6 +202,7 @@ public class LandGenerator : MonoBehaviour
                     GameObject mushroom = Instantiate(toadstool, transform);
                     mushroom.transform.parent = mapPropsContainer.transform;
                     mushroom.transform.position = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.5f, 0);
+                    mushroom.transform.localScale = Vector3.one * 0.7f;
                     //make it occupied
                     landMap[x, y] = 2;
                     mushroom.GetComponent<SpriteRenderer>().sortingOrder = 2;
@@ -191,6 +228,7 @@ public class LandGenerator : MonoBehaviour
                     GameObject stumpTree = Instantiate(stump, transform);
                     stumpTree.transform.parent = mapPropsContainer.transform;
                     stumpTree.transform.position = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.5f, 0);
+                    stumpTree.transform.localScale = Vector3.one * 0.7f;
                     //make it occupied
                     landMap[x, y] = 2;
                     stumpTree.GetComponent<SpriteRenderer>().sortingOrder = 2;
