@@ -152,13 +152,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38594e2bd9e9343db9a2b755590186b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 80
-  height: 50
+  width: 120
+  height: 60
   landGenerator:
     seed: 626
     useRandomSeed: 0
     smoothingSteps: 6
-    backgroundPercent: 37
+    backgroundPercent: 40
   treeGenerator:
     seed: 0
     useRandomSeed: 1
@@ -169,14 +169,14 @@ MonoBehaviour:
     useRandomSeed: 1
     smoothingSteps: 6
     backgroundPercent: 31
-  treeDensity: 77
+  treeDensity: 0.5
   flowerDensity: 78
   purpleFlowerPercent: 25
   orangeTreePercent: 25
   mushroomDensity: 1
   stumpDensity: 1
-  modifier: 0.053580217
-  useRandomModifier: 1
+  modifier: 0.05
+  useRandomModifier: 0
   tilemap: {fileID: 1799721740}
   waterTile: {fileID: 11400000, guid: 2047921413a004340947d44d35256d28, type: 2}
   grassTile: {fileID: 11400000, guid: 300366f93b0a5492b9e0afb5e502ef20, type: 2}

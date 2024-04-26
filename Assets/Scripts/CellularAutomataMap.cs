@@ -1,3 +1,4 @@
+using UnityEngine;
 using Random = System.Random;
 
 public static class CellularAutomataMap
@@ -6,20 +7,38 @@ public static class CellularAutomataMap
     {
         var map = new int [width, height];
         
-        RandomFillMap(seed, map, backgroundPercent);
+       RandomFillMap(seed, map, backgroundPercent);
         
         for (int i = 0; i < smoothingSteps; i++)
         {
-            SmoothMap(map);
+           SmoothMap(map);
         }
 
+        LogMap(map);
         return map;
+    }
+
+    private static void LogMap(int[,] map)
+    {
+        var zeros = 0;
+        var ones = 1;
+        for (int row = 0; row < map.GetLength(0); row++)
+        {
+            for (int col = 0; col < map.GetLength(1); col++)
+            {
+                if (map[row, col] == 0)
+                    zeros++;
+                else
+                    ones++;
+            }
+        }
+        Debug.Log($"[Map] Zeros:{zeros} Ones:{ones}");
     }
     
     private static void RandomFillMap(int seed, int[,] map, float backgroundPercent)
     {
-        var width = map.GetUpperBound(0);
-        var height = map.GetUpperBound(1);
+        var width = map.GetLength(0);
+        var height = map.GetLength(1);
 
         var pseudoRandom = new Random(seed);
 
@@ -27,7 +46,7 @@ public static class CellularAutomataMap
         {
             for (int y = 0; y < height; y++)
             {
-                if (x == 0 || x == width - 1 || y == 0 || y == height - 1)
+                if (x == 0 || x == width-1 || y == 0 || y == height-1)
                 {
                     map[x, y] = 1;
                 }
@@ -42,8 +61,8 @@ public static class CellularAutomataMap
 
     private static void SmoothMap(int[,] map)
     {
-        var width = map.GetUpperBound(0);
-        var height = map.GetUpperBound(1);
+        var width = map.GetLength(0);
+        var height = map.GetLength(1);
         int[,] mapBeforeSmoothing = (int[,])map.Clone();
         for (int x = 0; x < width; x++)
         {
