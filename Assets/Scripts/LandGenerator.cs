@@ -168,7 +168,7 @@ public class LandGenerator : MonoBehaviour
                             flower2.GetComponent<SpriteRenderer>().sortingOrder = 2;
                             
                             float v3 = UnityEngine.Random.Range(0f, flowerDensity);
-                            if (FlowerPerlinMap[x, y] < v3)
+                            if (FlowerPerlinMap[x, y] < v3/2)
                             {
                                 GameObject prefab3 = flowerPrefabs[UnityEngine.Random.Range(0, flowerPrefabs.Length)];
                                 GameObject flower3 = Instantiate(prefab3, transform);

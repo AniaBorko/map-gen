@@ -156,15 +156,15 @@ MonoBehaviour:
   height: 60
   landGenerator:
     seed: 626
-    useRandomSeed: 0
+    useRandomSeed: 1
     smoothingSteps: 6
-    backgroundPercent: 37
+    backgroundPercent: 40
   treeDensity: 0.3
   flowerDensity: 0.2
   mushroomDensity: 1
   stumpDensity: 1
   treeModifier: 0.05
-  flowerModifier: 0.05
+  flowerModifier: 0.048
   useRandomTreeModifier: 0
   useRandomFlowerModifier: 0
   tilemap: {fileID: 1799721740}
