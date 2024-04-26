@@ -171,9 +171,8 @@ MonoBehaviour:
   waterTile: {fileID: 11400000, guid: 2047921413a004340947d44d35256d28, type: 2}
   grassTile: {fileID: 11400000, guid: 300366f93b0a5492b9e0afb5e502ef20, type: 2}
   treePrefabs:
-  - {fileID: 5745786294694002941, guid: 61662b6a561634fc784c89d7850f3777, type: 3}
-  - {fileID: 4534656580443411168, guid: eef498e0bbd104246b0243fec9486f18, type: 3}
-  - {fileID: 5243643560053166905, guid: d28aa01c8881c4c299e635390f7e6a1d, type: 3}
+  - {fileID: 7334833523866510596, guid: 695850c22c3334c67864a926423632a7, type: 3}
+  - {fileID: 3346597829443852007, guid: ed13687c228f24defa4bad7184388c30, type: 3}
   flowerPrefabs:
   - {fileID: 6373199148086102382, guid: 056f38bc72a5d475887ac8e32441a531, type: 3}
   - {fileID: 4317672650426008773, guid: fdb85500a47db4b1b9ab81b15fc8f4b8, type: 3}

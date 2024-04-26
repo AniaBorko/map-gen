@@ -117,7 +117,7 @@ public class LandGenerator : MonoBehaviour
                         GameObject prefab = treePrefabs[UnityEngine.Random.Range(0, treePrefabs.Length)];
                         GameObject tree = Instantiate(prefab, transform);
                         tree.transform.parent = mapPropsContainer.transform;
-                        tree.transform.position = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.5f, 0);
+                        tree.transform.position = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.48f, 0);
                         tree.transform.localScale = Vector3.one * 0.7f;
                         tree.GetComponent<SpriteRenderer>().sortingOrder = 4;
                         float v2 = UnityEngine.Random.Range(0f, treeDensity);
@@ -126,7 +126,7 @@ public class LandGenerator : MonoBehaviour
                             GameObject prefab2 = treePrefabs[UnityEngine.Random.Range(0, treePrefabs.Length)];
                             GameObject tree2 = Instantiate(prefab2, transform);
                             tree2.transform.parent = mapPropsContainer.transform;
-                            tree2.transform.position = new Vector3(-width / 2 + x + 0.8f, -height / 2 + y + 0.8f, 0);
+                            tree2.transform.position = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.8f, 0);
                             tree2.transform.localScale = Vector3.one * 0.7f;
                             tree2.GetComponent<SpriteRenderer>().sortingOrder = 3;
                         }
