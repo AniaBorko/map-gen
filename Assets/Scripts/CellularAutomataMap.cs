@@ -3,11 +3,11 @@ using Random = System.Random;
 
 public static class CellularAutomataMap
 {
-    public static int[,] GenerateMap(int width, int height, int seed, int backgroundPercent, int smoothingSteps)
+    public static int[,] GenerateMap(int width, int height, int seed, int backgroundPercent, int smoothingSteps, bool edgesAreBackground)
     {
         var map = new int [width, height];
         
-       RandomFillMap(seed, map, backgroundPercent);
+       RandomFillMap(seed, map, backgroundPercent, edgesAreBackground);
         
         for (int i = 0; i < smoothingSteps; i++)
         {
@@ -16,7 +16,7 @@ public static class CellularAutomataMap
         return map;
     }
     
-    private static void RandomFillMap(int seed, int[,] map, float backgroundPercent)
+    private static void RandomFillMap(int seed, int[,] map, float backgroundPercent, bool edgesAreBackground)
     {
         var width = map.GetLength(0);
         var height = map.GetLength(1);
@@ -27,7 +27,7 @@ public static class CellularAutomataMap
         {
             for (int y = 0; y < height; y++)
             {
-                if (x == 0 || x == width-1 || y == 0 || y == height-1)
+                if ((x == 0 || x == width-1 || y == 0 || y == height-1) && edgesAreBackground)
                 {
                     map[x, y] = 1;
                 }

@@ -94,10 +94,19 @@ public class LandGenerator : MonoBehaviour
 
         mapPropsContainer = new GameObject("Map Props");
 
-        AddTrees();
-        AddFlowers();
-        AddMushrooms();
-        AddStumps();
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (landMap[x, y] == 0)
+                {
+                    AddTrees(x, y);
+                    AddFlowers(x, y);
+                    AddMushrooms(x, y);
+                    AddStumps(x, y);
+                }
+            }
+        }
     }
 
     void InstantiateMapProp(int xCoord, int yCoord, MapProp prefab)
@@ -113,76 +122,38 @@ public class LandGenerator : MonoBehaviour
         landMap[xCoord, yCoord] = 2;
     }
 
-    void AddTrees()
+    void AddTrees(int x, int y)
     {
-        for (int x = 0; x < width; x++)
+        float v = Random.Range(0f, treeDensity);
+        if (TreePerlinMap[x, y] < v)
         {
-            for (int y = 0; y < height; y++)
-            {
-                bool isOccupied = landMap[x, y] == 1;
-                Cell cell = new Cell(isOccupied);
-                grid[x, y] = cell;
-                if (!cell.isOccupied)
-                {
-                    float v = Random.Range(0f, treeDensity);
-                    if (TreePerlinMap[x, y] < v)
-                    {
-                        MapProp prefab = treePrefabs[Random.Range(0, treePrefabs.Length)];
-                        InstantiateMapProp(x, y, prefab);
-                    }
-                }
-            }
+            MapProp prefab = treePrefabs[Random.Range(0, treePrefabs.Length)];
+            InstantiateMapProp(x, y, prefab);
         }
     }
 
-    void AddFlowers()
+    void AddFlowers(int x, int y)
     {
-        for (int x = 0; x < width; x++)
+        float v = Random.Range(0f, flowerDensity);
+        if (FlowerPerlinMap[x, y] < v)
         {
-            for (int y = 0; y < height; y++)
-            {
-                if (landMap[x, y] == 0)
-                {
-                    float v = Random.Range(0f, flowerDensity);
-                    if (FlowerPerlinMap[x, y] < v)
-                    {
-                        MapProp prefab = flowerPrefabs[Random.Range(0, flowerPrefabs.Length)];
-                        InstantiateMapProp(x, y, prefab);
-                    }
-                }
-            }
+            MapProp prefab = flowerPrefabs[Random.Range(0, flowerPrefabs.Length)];
+            InstantiateMapProp(x, y, prefab);
         }
     }
 
-    void AddMushrooms()
+    void AddMushrooms(int x, int y)
     {
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                bool shouldSpawn = Random.Range(0, 1000) < mushroomDensity;
-
-                if (shouldSpawn && landMap[x, y] == 0)
-                {
-                    InstantiateMapProp(x, y, toadstool);
-                }
-            }
-        }
+        bool shouldSpawn = Random.Range(0, 1000) < mushroomDensity;
+        if (shouldSpawn)
+            InstantiateMapProp(x, y, toadstool);
     }
 
-    void AddStumps()
+    void AddStumps(int x, int y)
     {
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                bool shouldSpawn = Random.Range(0, 1000) < stumpDensity;
+        bool shouldSpawn = Random.Range(0, 1000) < stumpDensity;
 
-                if (shouldSpawn && landMap[x, y] == 0)
-                {
-                    InstantiateMapProp(x, y, stump);
-                }
-            }
-        }
+        if (shouldSpawn) 
+            InstantiateMapProp(x, y, stump);
     }
 }
