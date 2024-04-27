@@ -1,8 +1,7 @@
-using System.Runtime.CompilerServices;
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
-using Random = System.Random;
+using Random = UnityEngine.Random;
 
 public class LandGenerator : MonoBehaviour
 {
@@ -10,16 +9,18 @@ public class LandGenerator : MonoBehaviour
     public int height;
 
     public MapGenerator landGenerator = new MapGenerator();
-    
+
     [SerializeField] float treeDensity = 0.5f;
     [SerializeField] float flowerDensity = 0.5f;
-    [Range(0, 100)] public int mushroomDensity;
-    [Range(0, 100)] public int stumpDensity;
+    [Range(0, 1000)] public int mushroomDensity;
+    [Range(0, 1000)] public int stumpDensity;
 
     private int[,] landMap;
     private float[,] TreePerlinMap;
+
     private float[,] FlowerPerlinMap;
-    private int[,] mushroomMap;
+
+    //private int[,] mushroomMap;
     private int[,] stumpMap;
 
     [Range(0.04f, 0.06f)] public float treeModifier = 0.01f;
@@ -31,14 +32,14 @@ public class LandGenerator : MonoBehaviour
     public TileBase waterTile;
     public TileBase grassTile;
 
-    public GameObject[] treePrefabs;
-    public GameObject[] flowerPrefabs;
-    public GameObject toadstool;
-    public GameObject stump;
+    public MapProp[] treePrefabs;
+    public MapProp[] flowerPrefabs;
+    public MapProp toadstool;
+    public MapProp stump;
     private GameObject mapPropsContainer;
 
     private Cell[,] grid;
-    
+
     [ContextMenu("Generate Map")]
     private void Start()
     {
@@ -59,11 +60,11 @@ public class LandGenerator : MonoBehaviour
     private void GenerateRandomProperties()
     {
         if (useRandomTreeModifier)
-            treeModifier = UnityEngine.Random.Range(0.04f, 0.06f);
+            treeModifier = Random.Range(0.04f, 0.06f);
         if (useRandomTreeModifier)
-            flowerModifier = UnityEngine.Random.Range(0.04f, 0.06f);
+            flowerModifier = Random.Range(0.04f, 0.06f);
     }
-    
+
     private void AddTiles()
     {
         tilemap.ClearAllTiles();
@@ -73,12 +74,12 @@ public class LandGenerator : MonoBehaviour
             {
                 if (landMap[x, y] == 0)
                 {
-                    tilemap.SetTile(new Vector3Int(-width / 2 + x, -height / 2 + y, 0), grassTile);
+                    tilemap.SetTile(new Vector3Int(x, y, 0), grassTile);
                 }
 
                 if (landMap[x, y] == 1)
                 {
-                    tilemap.SetTile(new Vector3Int(-width / 2 + x, -height / 2 + y, 0), waterTile);
+                    tilemap.SetTile(new Vector3Int(x, y, 0), waterTile);
                 }
             }
         }
@@ -97,7 +98,20 @@ public class LandGenerator : MonoBehaviour
         AddFlowers();
         AddMushrooms();
         AddStumps();
-        
+    }
+
+    void InstantiateMapProp(int xCoord, int yCoord, MapProp prefab)
+    {
+        var propPos = tilemap.CellToWorld(new Vector3Int(xCoord, yCoord, 0));
+
+        var offset = new Vector3(Random.Range(-prefab.maxOffset, prefab.maxOffset),
+            Random.Range(-prefab.maxOffset, prefab.maxOffset));
+
+        MapProp prop = Instantiate(prefab, mapPropsContainer.transform);
+        prop.transform.position = propPos + offset;
+        //tree.transform.parent = mapPropsContainer.transform;
+
+        landMap[xCoord, yCoord] = 2;
     }
 
     void AddTrees()
@@ -106,33 +120,16 @@ public class LandGenerator : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                bool isOccupied = landMap[x,y] == 1;
+                bool isOccupied = landMap[x, y] == 1;
                 Cell cell = new Cell(isOccupied);
                 grid[x, y] = cell;
                 if (!cell.isOccupied)
                 {
-                    float v = UnityEngine.Random.Range(0f, treeDensity);
+                    float v = Random.Range(0f, treeDensity);
                     if (TreePerlinMap[x, y] < v)
                     {
-                        GameObject prefab = treePrefabs[UnityEngine.Random.Range(0, treePrefabs.Length)];
-                        GameObject tree = Instantiate(prefab, transform);
-                        tree.transform.parent = mapPropsContainer.transform;
-                        tree.transform.position = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.48f, 0);
-                        tree.transform.localScale = Vector3.one * 0.7f;
-                        tree.GetComponent<SpriteRenderer>().sortingOrder = 4;
-                        float v2 = UnityEngine.Random.Range(0f, treeDensity);
-                        if (TreePerlinMap[x, y] < v2/2)
-                        {
-                            GameObject prefab2 = treePrefabs[UnityEngine.Random.Range(0, treePrefabs.Length)];
-                            GameObject tree2 = Instantiate(prefab2, transform);
-                            tree2.transform.parent = mapPropsContainer.transform;
-                            tree2.transform.position = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.8f, 0);
-                            tree2.transform.localScale = Vector3.one * 0.7f;
-                            tree2.GetComponent<SpriteRenderer>().sortingOrder = 3;
-                        }
-
-                        //make it occupied
-                        landMap[x, y] = 2;
+                        MapProp prefab = treePrefabs[Random.Range(0, treePrefabs.Length)];
+                        InstantiateMapProp(x, y, prefab);
                     }
                 }
             }
@@ -147,91 +144,44 @@ public class LandGenerator : MonoBehaviour
             {
                 if (landMap[x, y] == 0)
                 {
-                    float v = UnityEngine.Random.Range(0f, flowerDensity);
+                    float v = Random.Range(0f, flowerDensity);
                     if (FlowerPerlinMap[x, y] < v)
                     {
-                        GameObject prefab = flowerPrefabs[UnityEngine.Random.Range(0, flowerPrefabs.Length)];
-                        GameObject flower = Instantiate(prefab, transform);
-                        flower.transform.parent = mapPropsContainer.transform;
-                        flower.transform.position = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.5f, 0);
-                        flower.transform.localScale = Vector3.one * 0.7f;
-                        flower.GetComponent<SpriteRenderer>().sortingOrder = 1;
-                        
-                        float v2 = UnityEngine.Random.Range(0f, flowerDensity);
-                        if (FlowerPerlinMap[x, y] < v2/2)
-                        {
-                            GameObject prefab2 = flowerPrefabs[UnityEngine.Random.Range(0, flowerPrefabs.Length)];
-                            GameObject flower2 = Instantiate(prefab2, transform);
-                            flower2.transform.parent = mapPropsContainer.transform;
-                            flower2.transform.position = new Vector3(-width / 2 + x + 0.7f, -height / 2 + y + 0.3f, 0);
-                            flower2.transform.localScale = Vector3.one * 0.7f;
-                            flower2.GetComponent<SpriteRenderer>().sortingOrder = 2;
-                            
-                            float v3 = UnityEngine.Random.Range(0f, flowerDensity);
-                            if (FlowerPerlinMap[x, y] < v3/2)
-                            {
-                                GameObject prefab3 = flowerPrefabs[UnityEngine.Random.Range(0, flowerPrefabs.Length)];
-                                GameObject flower3 = Instantiate(prefab3, transform);
-                                flower3.transform.parent = mapPropsContainer.transform;
-                                flower3.transform.position = new Vector3(-width / 2 + x + 0.2f, -height / 2 + y + 0.3f, 0);
-                                flower3.transform.localScale = Vector3.one * 0.7f;
-                                flower3.GetComponent<SpriteRenderer>().sortingOrder = 2;
-                            }
-                        }
-                        
-                        //make it occupied
-                        landMap[x, y] = 2;
+                        MapProp prefab = flowerPrefabs[Random.Range(0, flowerPrefabs.Length)];
+                        InstantiateMapProp(x, y, prefab);
                     }
                 }
             }
         }
     }
+
     void AddMushrooms()
     {
-        mushroomMap = new int[width, height];
-
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                Random mushroomDensityRandom = new Random();
-                mushroomMap[x, y] = (mushroomDensityRandom.Next(0, 100) < mushroomDensity) ? 1 : 0;
+                bool shouldSpawn = Random.Range(0, 1000) < mushroomDensity;
 
-                if (mushroomMap[x, y] == 1 && landMap[x, y] == 0)
+                if (shouldSpawn && landMap[x, y] == 0)
                 {
-                    GameObject mushroom = Instantiate(toadstool, transform);
-                    mushroom.transform.parent = mapPropsContainer.transform;
-                    mushroom.transform.position = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.5f, 0);
-                    mushroom.transform.localScale = Vector3.one * 0.7f;
-                    //make it occupied
-                    landMap[x, y] = 2;
-                    mushroom.GetComponent<SpriteRenderer>().sortingOrder = 2;
-                  
+                    InstantiateMapProp(x, y, toadstool);
                 }
             }
         }
-
     }
+
     void AddStumps()
     {
-        stumpMap = new int[width, height];
-
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                Random stumpDensityRandom = new Random();
-                stumpMap[x, y] = (stumpDensityRandom.Next(0, 100) < stumpDensity) ? 1 : 0;
+                bool shouldSpawn = Random.Range(0, 1000) < stumpDensity;
 
-                if (stumpMap[x, y] == 1 && landMap[x, y] == 0)
+                if (shouldSpawn && landMap[x, y] == 0)
                 {
-                    GameObject stumpTree = Instantiate(stump, transform);
-                    stumpTree.transform.parent = mapPropsContainer.transform;
-                    stumpTree.transform.position = new Vector3(-width / 2 + x + 0.5f, -height / 2 + y + 0.5f, 0);
-                    stumpTree.transform.localScale = Vector3.one * 0.7f;
-                    //make it occupied
-                    landMap[x, y] = 2;
-                    stumpTree.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                    InstantiateMapProp(x, y, stump);
                 }
             }
         }

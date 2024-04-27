@@ -38,6 +38,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Land
+    uniqueID: 2249906705
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Props
+    uniqueID: 2080485693
     locked: 0

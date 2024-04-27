@@ -13,26 +13,7 @@ public static class CellularAutomataMap
         {
            SmoothMap(map);
         }
-
-        LogMap(map);
         return map;
-    }
-
-    private static void LogMap(int[,] map)
-    {
-        var zeros = 0;
-        var ones = 1;
-        for (int row = 0; row < map.GetLength(0); row++)
-        {
-            for (int col = 0; col < map.GetLength(1); col++)
-            {
-                if (map[row, col] == 0)
-                    zeros++;
-                else
-                    ones++;
-            }
-        }
-        Debug.Log($"[Map] Zeros:{zeros} Ones:{ones}");
     }
     
     private static void RandomFillMap(int seed, int[,] map, float backgroundPercent)

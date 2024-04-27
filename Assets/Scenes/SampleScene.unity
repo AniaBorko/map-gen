@@ -161,8 +161,8 @@ MonoBehaviour:
     backgroundPercent: 40
   treeDensity: 0.3
   flowerDensity: 0.2
-  mushroomDensity: 1
-  stumpDensity: 1
+  mushroomDensity: 3
+  stumpDensity: 3
   treeModifier: 0.05
   flowerModifier: 0.048
   useRandomTreeModifier: 0
@@ -171,14 +171,14 @@ MonoBehaviour:
   waterTile: {fileID: 11400000, guid: 2047921413a004340947d44d35256d28, type: 2}
   grassTile: {fileID: 11400000, guid: 300366f93b0a5492b9e0afb5e502ef20, type: 2}
   treePrefabs:
-  - {fileID: 7334833523866510596, guid: 695850c22c3334c67864a926423632a7, type: 3}
-  - {fileID: 3346597829443852007, guid: ed13687c228f24defa4bad7184388c30, type: 3}
+  - {fileID: 9214894407199760111, guid: 4b87b79701d8e4129a30f223f5a08424, type: 3}
+  - {fileID: 512485373358199714, guid: 1cecbe95ae3904a9184eba28b39112fc, type: 3}
   flowerPrefabs:
-  - {fileID: 6373199148086102382, guid: 056f38bc72a5d475887ac8e32441a531, type: 3}
-  - {fileID: 4317672650426008773, guid: fdb85500a47db4b1b9ab81b15fc8f4b8, type: 3}
-  - {fileID: 6810619364746738065, guid: 80c75767977fa4b93947d8f273f0920c, type: 3}
-  toadstool: {fileID: 8343487810042602599, guid: 7d3b02469acf74910b2688186fdace3a, type: 3}
-  stump: {fileID: 5176847717203166853, guid: 716945992650c4d96af387f29c36dca7, type: 3}
+  - {fileID: 1499648439579841203, guid: 700b047312fda472e9a34b3ce7dd156f, type: 3}
+  - {fileID: 8479874642828156486, guid: c9cc82888507041de88021b0adaadab5, type: 3}
+  - {fileID: 8262309275124195797, guid: 2d96a62bd9a4e4dbc86a6ff736cd925e, type: 3}
+  toadstool: {fileID: 6256052170886261084, guid: 756254bbb2a8b4c1a82d81e6b4e73f93, type: 3}
+  stump: {fileID: 8375319932760335983, guid: fbcca5e8cd000413c82e593f3d5f490f, type: 3}
 --- !u!4 &512778900
 Transform:
   m_ObjectHideFlags: 0
@@ -368,7 +368,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 00000000
+  m_ApplyToSortingLayers: 0000000011da1a863db1017c
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -451,7 +451,7 @@ Transform:
   m_GameObject: {fileID: 1128204159}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 3.44, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -529,8 +529,8 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2045060591
+  m_SortingLayer: -1
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
