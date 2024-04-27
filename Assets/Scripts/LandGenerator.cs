@@ -109,7 +109,6 @@ public class LandGenerator : MonoBehaviour
 
         MapProp prop = Instantiate(prefab, mapPropsContainer.transform);
         prop.transform.position = propPos + offset;
-        //tree.transform.parent = mapPropsContainer.transform;
 
         landMap[xCoord, yCoord] = 2;
     }
