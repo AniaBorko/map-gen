@@ -21,6 +21,7 @@ public class LandGenerator : MonoBehaviour
 
     public MapPropGenerationParameters[] propGenerationParams;
     public PerlinPropGenerator[] perlinPropParams;
+    public MapProp window;
 
     [ContextMenu("Generate Map")]
     private void Start()
@@ -73,7 +74,7 @@ public class LandGenerator : MonoBehaviour
             }
         }
     }
-
+    
     private void AddProps()
     {
         if (mapPropsContainer != null)
@@ -92,6 +93,25 @@ public class LandGenerator : MonoBehaviour
                 if (landMap[x, y] == 0)
                     AddExtraProps(x, y);
             }
+        }
+
+        int XParam;
+        int YParam;
+        int neighbors;
+        int counter = 0;
+        do
+        {
+            XParam = Random.Range(0, height - 1);
+            YParam = Random.Range(0, height - 1);
+            neighbors = CellularAutomataMap.GetSurroundingBackgroundCount(landMap, XParam, YParam, width, height);
+            counter++;
+        } while (!(landMap[XParam, YParam] == 0 && neighbors == 0) && counter < 10);
+
+        if (counter < 10)
+        {
+            var position = new Vector3(XParam, YParam, 0);
+            MapProp windowPrefarb = Instantiate(window, mapPropsContainer.transform);
+            windowPrefarb.transform.position = position;
         }
     }
 

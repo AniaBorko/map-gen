@@ -59,7 +59,7 @@ public static class CellularAutomataMap
         }
     }
 
-    private static int GetSurroundingBackgroundCount(int[,] map, int gridX, int gridY, int width, int height)
+    public static int GetSurroundingBackgroundCount(int[,] map, int gridX, int gridY, int width, int height)
     {
         int backgroundCount = 0;
 
