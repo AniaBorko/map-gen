@@ -155,11 +155,11 @@ MonoBehaviour:
   width: 120
   height: 60
   landGenerator:
-    seed: 626
-    useRandomSeed: 1
+    seed: 313
+    useRandomSeed: 0
     smoothingSteps: 6
     backgroundPercent: 40
-    edgesAreBackground: 0
+    edgesAreBackground: 1
   treeDensity: 0.3
   flowerDensity: 0.2
   treeModifier: 0.05
@@ -181,6 +181,7 @@ MonoBehaviour:
     density: 3
   - prop: {fileID: 7111935789840788438, guid: 0839fa20a0d36401b8503b533471c636, type: 3}
     density: 2
+  perlinPropParams: []
 --- !u!4 &512778900
 Transform:
   m_ObjectHideFlags: 0

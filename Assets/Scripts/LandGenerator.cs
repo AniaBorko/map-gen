@@ -11,27 +11,16 @@ public class LandGenerator : MonoBehaviour
 
     public MapGenerator landGenerator = new MapGenerator();
 
-    [SerializeField] float treeDensity = 0.5f;
-    [SerializeField] float flowerDensity = 0.5f;
-
     private int[,] landMap;
-    private float[,] TreePerlinMap;
-    private float[,] FlowerPerlinMap;
-
-    [Range(0.04f, 0.06f)] public float treeModifier = 0.01f;
-    [Range(0.04f, 0.06f)] public float flowerModifier = 0.01f;
-    public bool useRandomTreeModifier;
-    public bool useRandomFlowerModifier;
 
     public Tilemap tilemap;
     public TileBase waterTile;
     public TileBase grassTile;
-
-    public MapProp[] treePrefabs;
-    public MapProp[] flowerPrefabs;
+    
     private GameObject mapPropsContainer;
 
     public MapPropGenerationParameters[] propGenerationParams;
+    public PerlinPropGenerator[] perlinPropParams;
 
     [ContextMenu("Generate Map")]
     private void Start()
@@ -45,16 +34,24 @@ public class LandGenerator : MonoBehaviour
     private void GenerateStructureMaps()
     {
         landMap = landGenerator.GenerateMap(width, height);
-        TreePerlinMap = PerlinNoiseMap.GenerateMap(width, height, treeModifier);
-        FlowerPerlinMap = PerlinNoiseMap.GenerateMap(width, height, flowerModifier);
+        InitializePerlinProps();
+    }
+
+    private void InitializePerlinProps()
+    {
+        foreach (var perlinProp in perlinPropParams)
+        {
+            perlinProp.PerlinMap = PerlinNoiseMap.GenerateMap(width, height, perlinProp.modifier);
+        }
     }
 
     private void GenerateRandomProperties()
     {
-        if (useRandomTreeModifier)
-            treeModifier = Random.Range(0.04f, 0.06f);
-        if (useRandomFlowerModifier)
-            flowerModifier = Random.Range(0.04f, 0.06f);
+        foreach (var perlinProp in perlinPropParams)
+        {
+            if (perlinProp.useRandomModifier)
+                perlinProp.modifier = Random.Range(0.04f, 0.06f);
+        }
     }
 
     private void AddTiles()
@@ -91,9 +88,7 @@ public class LandGenerator : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 if (landMap[x, y] == 0)
-                    AddTrees(x, y);
-                if (landMap[x, y] == 0)
-                    AddFlowers(x, y);
+                    AddPerlinProps(x, y);
                 if (landMap[x, y] == 0)
                     AddExtraProps(x, y);
             }
@@ -113,26 +108,19 @@ public class LandGenerator : MonoBehaviour
         landMap[xCoord, yCoord] = 2;
     }
 
-    void AddTrees(int x, int y)
+    void AddPerlinProps(int x, int y)
     {
-        float v = Random.Range(0f, treeDensity);
-        if (TreePerlinMap[x, y] < v)
+        foreach (var propParams in perlinPropParams)
         {
-            MapProp prefab = treePrefabs[Random.Range(0, treePrefabs.Length)];
-            InstantiateMapProp(x, y, prefab);
+            float generationChance = Random.Range(0f, propParams.density);
+            if (propParams.PerlinMap[x, y] < generationChance)
+            {
+                MapProp prefab = propParams.prop[Random.Range(0, propParams.prop.Length)];
+                InstantiateMapProp(x, y, prefab);
+                return;
+            }
         }
     }
-
-    void AddFlowers(int x, int y)
-    {
-        float v = Random.Range(0f, flowerDensity);
-        if (FlowerPerlinMap[x, y] < v)
-        {
-            MapProp prefab = flowerPrefabs[Random.Range(0, flowerPrefabs.Length)];
-            InstantiateMapProp(x, y, prefab);
-        }
-    }
-
     void AddExtraProps(int x, int y)
     {
         foreach (var propParams in propGenerationParams)
