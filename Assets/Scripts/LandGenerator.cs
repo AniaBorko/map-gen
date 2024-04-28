@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
@@ -12,16 +13,10 @@ public class LandGenerator : MonoBehaviour
 
     [SerializeField] float treeDensity = 0.5f;
     [SerializeField] float flowerDensity = 0.5f;
-    [Range(0, 1000)] public int mushroomDensity;
-    [Range(0, 1000)] public int stumpDensity;
 
     private int[,] landMap;
     private float[,] TreePerlinMap;
-
     private float[,] FlowerPerlinMap;
-
-    //private int[,] mushroomMap;
-    private int[,] stumpMap;
 
     [Range(0.04f, 0.06f)] public float treeModifier = 0.01f;
     [Range(0.04f, 0.06f)] public float flowerModifier = 0.01f;
@@ -34,16 +29,13 @@ public class LandGenerator : MonoBehaviour
 
     public MapProp[] treePrefabs;
     public MapProp[] flowerPrefabs;
-    public MapProp toadstool;
-    public MapProp stump;
     private GameObject mapPropsContainer;
 
-    private Cell[,] grid;
+    public MapPropGenerationParameters[] propGenerationParams;
 
     [ContextMenu("Generate Map")]
     private void Start()
     {
-        grid = new Cell [width, height];
         GenerateRandomProperties();
         GenerateStructureMaps();
         AddTiles();
@@ -99,12 +91,11 @@ public class LandGenerator : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 if (landMap[x, y] == 0)
-                {
                     AddTrees(x, y);
+                if (landMap[x, y] == 0)
                     AddFlowers(x, y);
-                    AddMushrooms(x, y);
-                    AddStumps(x, y);
-                }
+                if (landMap[x, y] == 0)
+                    AddExtraProps(x, y);
             }
         }
     }
@@ -142,18 +133,16 @@ public class LandGenerator : MonoBehaviour
         }
     }
 
-    void AddMushrooms(int x, int y)
+    void AddExtraProps(int x, int y)
     {
-        bool shouldSpawn = Random.Range(0, 1000) < mushroomDensity;
-        if (shouldSpawn)
-            InstantiateMapProp(x, y, toadstool);
-    }
-
-    void AddStumps(int x, int y)
-    {
-        bool shouldSpawn = Random.Range(0, 1000) < stumpDensity;
-
-        if (shouldSpawn) 
-            InstantiateMapProp(x, y, stump);
+        foreach (var propParams in propGenerationParams)
+        {
+            bool shouldSpawn = Random.Range(0, 1000) < propParams.density;
+            if (shouldSpawn)
+            {
+                InstantiateMapProp(x, y, propParams.prop);
+                return;
+            }
+        }
     }
 }
