@@ -53,7 +53,7 @@ public class LandGenerator : MonoBehaviour
     {
         if (useRandomTreeModifier)
             treeModifier = Random.Range(0.04f, 0.06f);
-        if (useRandomTreeModifier)
+        if (useRandomFlowerModifier)
             flowerModifier = Random.Range(0.04f, 0.06f);
     }
 
