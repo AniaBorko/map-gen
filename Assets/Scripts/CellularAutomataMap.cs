@@ -6,11 +6,11 @@ public static class CellularAutomataMap
     // 0 - land
     // 1 - water
     // 2 - prop
-    public static int[,] GenerateMap(int width, int height, int seed, int backgroundPercent, int smoothingSteps, bool edgesAreBackground)
+    public static int[,] GenerateMap(int width, int height, int seed, int backgroundPercent, int smoothingSteps, int edgeThickness)
     {
         var map = new int [width, height];
         
-       RandomFillMap(seed, map, backgroundPercent, edgesAreBackground);
+       RandomFillMap(seed, map, backgroundPercent, edgeThickness);
         
         for (int i = 0; i < smoothingSteps; i++)
         {
@@ -19,7 +19,7 @@ public static class CellularAutomataMap
         return map;
     }
     
-    private static void RandomFillMap(int seed, int[,] map, float backgroundPercent, bool edgesAreBackground)
+    private static void RandomFillMap(int seed, int[,] map, float backgroundPercent, int edgeThickness)
     {
         var width = map.GetLength(0);
         var height = map.GetLength(1);
@@ -30,7 +30,7 @@ public static class CellularAutomataMap
         {
             for (int y = 0; y < height; y++)
             {
-                if ((x == 0 || x == width-1 || y == 0 || y == height-1) && edgesAreBackground)
+                if (x <= -1 + edgeThickness || x >= width-edgeThickness || y <= -1 +edgeThickness || y >= height-edgeThickness)
                 {
                     map[x, y] = 1;
                 }

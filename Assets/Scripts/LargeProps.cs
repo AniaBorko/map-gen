@@ -4,7 +4,7 @@ using System;
 
 public class LargePropGenerator
 {
-    public MapProp prop;
+    public MapProp[] prop;
     public int numberOfProps;
     public int neighborhoodSize;
 
