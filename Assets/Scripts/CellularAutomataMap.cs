@@ -3,6 +3,9 @@ using Random = System.Random;
 
 public static class CellularAutomataMap
 {
+    // 0 - land
+    // 1 - water
+    // 2 - prop
     public static int[,] GenerateMap(int width, int height, int seed, int backgroundPercent, int smoothingSteps, bool edgesAreBackground)
     {
         var map = new int [width, height];
@@ -59,6 +62,7 @@ public static class CellularAutomataMap
         }
     }
 
+    
     public static int GetSurroundingBackgroundCount(int[,] map, int gridX, int gridY, int width, int height)
     {
         int backgroundCount = 0;
@@ -69,12 +73,12 @@ public static class CellularAutomataMap
             {
                 if (neighborX >= 0 && neighborX < width && neighborY >= 0 && neighborY < height)
                 {
-                    if (neighborX != gridX || neighborY != gridY)
+                    var isBackground = map[neighborX, neighborY] > 0;
+                    if ((neighborX != gridX || neighborY != gridY) && isBackground)
                     {
-                        backgroundCount += map[neighborX, neighborY];
+                        backgroundCount++;
                     }
                 }
-
                 else
                 {
                     backgroundCount++;

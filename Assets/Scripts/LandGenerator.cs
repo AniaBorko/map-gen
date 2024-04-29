@@ -1,8 +1,14 @@
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
+
+public class LargeProps
+{
+    public MapProp prop;
+}
 
 public class LandGenerator : MonoBehaviour
 {
@@ -22,6 +28,15 @@ public class LandGenerator : MonoBehaviour
     public MapPropGenerationParameters[] propGenerationParams;
     public PerlinPropGenerator[] perlinPropParams;
     public MapProp window;
+
+    public Vector2Int debugCoords;
+    
+    [ContextMenu("Print Neighbours")]
+    private void PrintNeighbours()
+    {
+       var result= CellularAutomataMap.GetSurroundingBackgroundCount(landMap, debugCoords.x, debugCoords.y, width, height);
+       Debug.Log(result);
+    }
 
     [ContextMenu("Generate Map")]
     private void Start()
@@ -94,24 +109,61 @@ public class LandGenerator : MonoBehaviour
                     AddExtraProps(x, y);
             }
         }
+        
+        AddLargeProp();
+    }
 
-        int XParam;
-        int YParam;
+    void AddLargeProp()
+    {
+        int x;
+        int y;
         int neighbors;
         int counter = 0;
+
         do
         {
-            XParam = Random.Range(0, height - 1);
-            YParam = Random.Range(0, height - 1);
-            neighbors = CellularAutomataMap.GetSurroundingBackgroundCount(landMap, XParam, YParam, width, height);
+            x = Random.Range(0, width - 1);
+            y = Random.Range(0, height - 1);
+            var isCoordOccupied = landMap[x, y] != 0;
+            neighbors = CellularAutomataMap.GetSurroundingBackgroundCount(landMap, x, y, width, height);
+            Debug.Log($"x{x} y{y}");
+            Debug.Log($"neighbors{neighbors}");
+            Debug.Log($"counter{counter}");
+            if(!isCoordOccupied && neighbors == 0)
+                break;
             counter++;
-        } while (!(landMap[XParam, YParam] == 0 && neighbors == 0) && counter < 10);
+        } while (counter < 10);
 
         if (counter < 10)
         {
-            var position = new Vector3(XParam, YParam, 0);
-            MapProp windowPrefarb = Instantiate(window, mapPropsContainer.transform);
-            windowPrefarb.transform.position = position;
+            neighbors = CellularAutomataMap.GetSurroundingBackgroundCount(landMap, x, y, width, height);
+            
+            var position = tilemap.CellToWorld(new Vector3Int(x, y, 0));
+   
+            MapProp prop = Instantiate(window, mapPropsContainer.transform);
+            prop.transform.position = position;
+            AddPropDebugData(prop.gameObject, x, y);
+
+            MarkSurroundingsAsOccupied(landMap, x, y);
+        }
+    }
+
+    private void AddPropDebugData(GameObject obj, int x, int y)
+    {
+        var neighbors = CellularAutomataMap.GetSurroundingBackgroundCount(landMap, x, y, width, height);
+        var debugData = obj.AddComponent<PropDebugData>();
+        debugData.coords = new Vector2Int(x, y);
+        debugData.neighbourCount = neighbors;
+    }
+
+    void MarkSurroundingsAsOccupied(int[,] map, int gridX, int gridY)
+    {
+        for (int x = gridX - 1; x <= gridX + 1; x++)
+        {
+            for (int y = gridY - 1; x <= gridY + 1; x++)
+            {
+                map[x, y] = 2;
+            }
         }
     }
 
@@ -124,7 +176,7 @@ public class LandGenerator : MonoBehaviour
 
         MapProp prop = Instantiate(prefab, mapPropsContainer.transform);
         prop.transform.position = propPos + offset;
-
+        AddPropDebugData(prop.gameObject, xCoord,yCoord);
         landMap[xCoord, yCoord] = 2;
     }
 
