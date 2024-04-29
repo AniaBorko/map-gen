@@ -23,16 +23,7 @@ public class LandGenerator : MonoBehaviour
     public MapPropGenerationParameters[] propGenerationParams;
     public PerlinPropGenerator[] perlinPropParams;
     public LargePropGenerator[] largePropParams;
-
-    //public Vector2Int debugCoords;
     
-    /*[ContextMenu("Print Neighbours")]
-    private void PrintNeighbours()
-    {
-       var result= CellularAutomataMap.GetSurroundingBackgroundCount(landMap, debugCoords.x, debugCoords.y, width, height);
-       Debug.Log(result);
-    }*/
-
     [ContextMenu("Generate Map")]
     private void Start()
     {
@@ -141,15 +132,7 @@ public class LandGenerator : MonoBehaviour
             }
         }
     }
-
-  /*  private void AddPropDebugData(GameObject obj, int x, int y)
-    {
-        var neighbors = CellularAutomataMap.GetSurroundingBackgroundCount(landMap, x, y, width, height);
-        var debugData = obj.AddComponent<PropDebugData>();
-        debugData.coords = new Vector2Int(x, y);
-        debugData.neighbourCount = neighbors;
-    }*/
-
+    
     void MarkSurroundingsAsOccupied(int[,] map, int gridX, int gridY, int neighborhoodSize)
     {
         for (int x = gridX - neighborhoodSize; x <= gridX + neighborhoodSize; x++)
@@ -170,7 +153,6 @@ public class LandGenerator : MonoBehaviour
 
         MapProp prop = Instantiate(prefab, mapPropsContainer.transform);
         prop.transform.position = propPos + offset;
-        //AddPropDebugData(prop.gameObject, xCoord,yCoord);
         landMap[xCoord, yCoord] = 2;
     }
 
