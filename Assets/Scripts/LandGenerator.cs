@@ -5,11 +5,6 @@ using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-public class LargeProps
-{
-    public MapProp prop;
-}
-
 public class LandGenerator : MonoBehaviour
 {
     public int width;
@@ -27,16 +22,16 @@ public class LandGenerator : MonoBehaviour
 
     public MapPropGenerationParameters[] propGenerationParams;
     public PerlinPropGenerator[] perlinPropParams;
-    public MapProp window;
+    public LargePropGenerator[] largePropParams;
 
-    public Vector2Int debugCoords;
+    //public Vector2Int debugCoords;
     
-    [ContextMenu("Print Neighbours")]
+    /*[ContextMenu("Print Neighbours")]
     private void PrintNeighbours()
     {
        var result= CellularAutomataMap.GetSurroundingBackgroundCount(landMap, debugCoords.x, debugCoords.y, width, height);
        Debug.Log(result);
-    }
+    }*/
 
     [ContextMenu("Generate Map")]
     private void Start()
@@ -109,7 +104,6 @@ public class LandGenerator : MonoBehaviour
                     AddExtraProps(x, y);
             }
         }
-        
         AddLargeProp();
     }
 
@@ -119,50 +113,50 @@ public class LandGenerator : MonoBehaviour
         int y;
         int neighbors;
         int counter = 0;
+        int limit = width * height;
 
-        do
+        foreach (var propParams in largePropParams)
         {
-            x = Random.Range(0, width - 1);
-            y = Random.Range(0, height - 1);
-            var isCoordOccupied = landMap[x, y] != 0;
-            neighbors = CellularAutomataMap.GetSurroundingBackgroundCount(landMap, x, y, width, height);
-            Debug.Log($"x{x} y{y}");
-            Debug.Log($"neighbors{neighbors}");
-            Debug.Log($"counter{counter}");
-            if(!isCoordOccupied && neighbors == 0)
-                break;
-            counter++;
-        } while (counter < 10);
+            for (int i = 0; i < propParams.numberOfProps; i++)
+            {
+                do
+                {
+                    x = Random.Range(0, width - 1);
+                    y = Random.Range(0, height - 1);
+                    var isCoordOccupied = landMap[x, y] != 0;
+                    neighbors = CellularAutomataMap.GetSurroundingBackgroundCount(landMap, x, y, width, height, propParams.neighborhoodSize);
+                    Debug.Log($"x{x} y{y}");
+                    Debug.Log($"neighbors{neighbors}");
+                    Debug.Log($"counter{counter}");
+                    counter++;
+                    if (!isCoordOccupied && neighbors == 0)
+                        break;
+                } while (counter < limit);
 
-        if (counter < 10)
-        {
-            neighbors = CellularAutomataMap.GetSurroundingBackgroundCount(landMap, x, y, width, height);
-            
-            var position = tilemap.CellToWorld(new Vector3Int(x, y, 0));
-   
-            MapProp prop = Instantiate(window, mapPropsContainer.transform);
-            prop.transform.position = position;
-            AddPropDebugData(prop.gameObject, x, y);
-
-            MarkSurroundingsAsOccupied(landMap, x, y);
+                if (counter < limit)
+                {
+                    InstantiateMapProp(x, y, propParams.prop);
+                    MarkSurroundingsAsOccupied(landMap, x, y, propParams.neighborhoodSize);
+                }
+            }
         }
     }
 
-    private void AddPropDebugData(GameObject obj, int x, int y)
+  /*  private void AddPropDebugData(GameObject obj, int x, int y)
     {
         var neighbors = CellularAutomataMap.GetSurroundingBackgroundCount(landMap, x, y, width, height);
         var debugData = obj.AddComponent<PropDebugData>();
         debugData.coords = new Vector2Int(x, y);
         debugData.neighbourCount = neighbors;
-    }
+    }*/
 
-    void MarkSurroundingsAsOccupied(int[,] map, int gridX, int gridY)
+    void MarkSurroundingsAsOccupied(int[,] map, int gridX, int gridY, int neighborhoodSize)
     {
-        for (int x = gridX - 1; x <= gridX + 1; x++)
+        for (int x = gridX - neighborhoodSize; x <= gridX + neighborhoodSize; x++)
         {
-            for (int y = gridY - 1; x <= gridY + 1; x++)
+            for (int y = gridY - neighborhoodSize; x <= gridY + neighborhoodSize; x++)
             {
-                map[x, y] = 2;
+                map[x, y] = neighborhoodSize;
             }
         }
     }
@@ -176,7 +170,7 @@ public class LandGenerator : MonoBehaviour
 
         MapProp prop = Instantiate(prefab, mapPropsContainer.transform);
         prop.transform.position = propPos + offset;
-        AddPropDebugData(prop.gameObject, xCoord,yCoord);
+        //AddPropDebugData(prop.gameObject, xCoord,yCoord);
         landMap[xCoord, yCoord] = 2;
     }
 
