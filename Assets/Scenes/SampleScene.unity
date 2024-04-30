@@ -152,14 +152,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38594e2bd9e9343db9a2b755590186b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 120
-  height: 60
+  width: 60
+  height: 30
   landGenerator:
     seed: 313
     useRandomSeed: 1
     smoothingSteps: 6
     backgroundPercent: 43
-    edgeThickness: 0
+    edgeThickness: 1
   tilemap: {fileID: 1799721740}
   waterTile: {fileID: 11400000, guid: 2047921413a004340947d44d35256d28, type: 2}
   grassTile: {fileID: 11400000, guid: 300366f93b0a5492b9e0afb5e502ef20, type: 2}
@@ -218,6 +218,7 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -312,7 +313,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 40
+  orthographic size: 20
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -337,12 +338,26 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 33.44, y: 15, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f78673e6f268f4ac8907908a18887b9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  landGenerator: {fileID: 512778899}
+  cameraHeight: 10
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0

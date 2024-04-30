@@ -183,8 +183,5 @@ public class LandGenerator : MonoBehaviour
             }
         }
     }
-
-  
-   
-  
+    
 }
