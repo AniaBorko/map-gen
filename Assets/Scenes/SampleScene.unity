@@ -152,17 +152,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38594e2bd9e9343db9a2b755590186b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 60
-  height: 30
+  width: 120
+  height: 60
+  tilemap: {fileID: 1799721740}
+  waterTile: {fileID: 11400000, guid: 2047921413a004340947d44d35256d28, type: 2}
+  grassTile: {fileID: 11400000, guid: 300366f93b0a5492b9e0afb5e502ef20, type: 2}
   landGenerator:
     seed: 313
     useRandomSeed: 1
     smoothingSteps: 6
-    backgroundPercent: 43
+    waterPercent: 43
     edgeThickness: 1
-  tilemap: {fileID: 1799721740}
-  waterTile: {fileID: 11400000, guid: 2047921413a004340947d44d35256d28, type: 2}
-  grassTile: {fileID: 11400000, guid: 300366f93b0a5492b9e0afb5e502ef20, type: 2}
   propGenerationParams:
   - prop: {fileID: 8375319932760335983, guid: fbcca5e8cd000413c82e593f3d5f490f, type: 3}
     density: 3
@@ -172,14 +172,14 @@ MonoBehaviour:
   - prop:
     - {fileID: 9214894407199760111, guid: 4b87b79701d8e4129a30f223f5a08424, type: 3}
     - {fileID: 512485373358199714, guid: 1cecbe95ae3904a9184eba28b39112fc, type: 3}
-    density: 0.3
+    density: 0.4
     modifier: 0.05
     useRandomModifier: 0
   - prop:
     - {fileID: 8479874642828156486, guid: c9cc82888507041de88021b0adaadab5, type: 3}
     - {fileID: 8262309275124195797, guid: 2d96a62bd9a4e4dbc86a6ff736cd925e, type: 3}
     - {fileID: 1499648439579841203, guid: 700b047312fda472e9a34b3ce7dd156f, type: 3}
-    density: 0.2
+    density: 0.3
     modifier: 0.05
     useRandomModifier: 0
   largePropParams:
@@ -313,7 +313,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 20
+  orthographic size: 40
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
