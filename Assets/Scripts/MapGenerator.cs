@@ -41,7 +41,7 @@ public class MapGenerator : MonoBehaviour
         landMap = landGenerator.GenerateMap(width, height);
         InitializePerlinProps();
     }
-
+    
     private void InitializePerlinProps()
     {
         foreach (var perlinProp in perlinPropParams)
@@ -95,6 +95,7 @@ public class MapGenerator : MonoBehaviour
         AddLargeProps();
     }
     
+    //Adds props based on perlin noise (trees and flowers)
     void AddPerlinProps(int x, int y)
     {
         foreach (var propParams in perlinPropParams)
@@ -121,6 +122,7 @@ public class MapGenerator : MonoBehaviour
         landMap[xCoord, yCoord] = PROP;
     }
 
+    //With the current assets adds mushrooms and stumps
     void AddExtraProps(int x, int y)
     {
         foreach (var propParams in propGenerationParams)
@@ -133,6 +135,8 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
+    
+    //With the current assets adds tents with fireplaces
     void AddLargeProps()
     {
         int x;
@@ -145,6 +149,7 @@ public class MapGenerator : MonoBehaviour
         {
             for (int i = 0; i < propParams.numberOfProps; i++)
             {
+                //Finds a spot with large enough clear space around
                 do
                 {
                     x = Random.Range(0, width - 1);

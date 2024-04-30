@@ -12,7 +12,6 @@ public static class PerlinNoiseMap
         {
             for (int y = 0; y < height; y++)
             {
-                //Generate a new point using perlin noise, then round it to a value of either 0 or 1
                 newPoint = (Mathf.PerlinNoise(x * modifier + xOffset, y * modifier + yOffset));
                 perlinMap[x, y] = newPoint;
             }

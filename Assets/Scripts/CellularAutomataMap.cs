@@ -29,7 +29,7 @@ public static class CellularAutomataMap
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
-            {
+            {   //If edges desired as water, marks them water with adjusted thickness of edge
                 if (x <= -1 + edgeThickness || x >= width-edgeThickness || y <= -1 +edgeThickness || y >= height-edgeThickness)
                 {
                     map[x, y] = 1;
@@ -63,6 +63,7 @@ public static class CellularAutomataMap
     }
 
     
+    //Returns the number of neighboring cells which aren't just empty land
     public static int GetSurroundingBackgroundCount(int[,] map, int gridX, int gridY, int neighborhoodSize)
     {
         int backgroundCount = 0;
