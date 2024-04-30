@@ -52,7 +52,7 @@ public static class CellularAutomataMap
         {
             for (int y = 0; y < height; y++)
             {
-                int neighborBackgroundTiles = GetSurroundingBackgroundCount(mapBeforeSmoothing, x, y, width, height, 1);
+                int neighborBackgroundTiles = GetSurroundingBackgroundCount(mapBeforeSmoothing, x, y,  1);
 
                 if (neighborBackgroundTiles > 4)
                     map[x, y] = 1;
@@ -63,9 +63,12 @@ public static class CellularAutomataMap
     }
 
     
-    public static int GetSurroundingBackgroundCount(int[,] map, int gridX, int gridY, int width, int height, int neighborhoodSize)
+    public static int GetSurroundingBackgroundCount(int[,] map, int gridX, int gridY, int neighborhoodSize)
     {
         int backgroundCount = 0;
+        
+        var width = map.GetLength(0);
+        var height = map.GetLength(1);
 
         for (int neighborX = gridX - neighborhoodSize; neighborX <= gridX + neighborhoodSize; neighborX++)
         {

@@ -1,187 +1,20 @@
-using Unity.VisualScripting;
-using UnityEditor;
+using System;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.Tilemaps;
-using Random = UnityEngine.Random;
 
-public class LandGenerator : MonoBehaviour
+[Serializable]
+public class LandGenerator
 {
-    // 0 - land
-    // 1 - water
-    // 2 - prop
-    
-    public int width;
-    public int height;
+    public int seed;
+    public bool useRandomSeed;
+    public int smoothingSteps;
+    [Range(0,100)]
+    public int backgroundPercent;
+    public int edgeThickness;
 
-    public MapGenerator landGenerator = new MapGenerator();
-
-    private int[,] landMap;
-
-    public Tilemap tilemap;
-    public TileBase waterTile;
-    public TileBase grassTile;
-    
-    private GameObject mapPropsContainer;
-
-    public MapPropGenerationParameters[] propGenerationParams;
-    public PerlinPropGenerator[] perlinPropParams;
-    public LargePropGenerator[] largePropParams;
-    
-    [ContextMenu("Generate Map")]
-    private void Start()
+    public int[,] GenerateMap(int width, int height)
     {
-        GenerateRandomProperties();
-        GenerateStructureMaps();
-        AddTiles();
-        AddProps();
+        if(useRandomSeed)
+            seed = UnityEngine.Random.Range(0, 1000);
+        return CellularAutomataMap.GenerateMap(width, height, seed, backgroundPercent, smoothingSteps, edgeThickness);
     }
-
-    private void GenerateRandomProperties()
-    {
-        foreach (var perlinProp in perlinPropParams)
-        {
-            if (perlinProp.useRandomModifier)
-                perlinProp.modifier = Random.Range(0.04f, 0.06f);
-        }
-    }
-    
-    private void GenerateStructureMaps()
-    {
-        landMap = landGenerator.GenerateMap(width, height);
-        InitializePerlinProps();
-    }
-
-    private void InitializePerlinProps()
-    {
-        foreach (var perlinProp in perlinPropParams)
-        {
-            perlinProp.PerlinMap = PerlinNoiseMap.GenerateMap(width, height, perlinProp.modifier);
-        }
-    }
-
-    private void AddTiles()
-    {
-        tilemap.ClearAllTiles();
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                if (landMap[x, y] == 0)
-                {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), grassTile);
-                }
-
-                if (landMap[x, y] == 1)
-                {
-                    tilemap.SetTile(new Vector3Int(x, y, 0), waterTile);
-                }
-            }
-        }
-    }
-    
-    private void AddProps()
-    {
-        if (mapPropsContainer != null)
-        {
-            Destroy(mapPropsContainer);
-        }
-
-        mapPropsContainer = new GameObject("Map Props");
-
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                if (landMap[x, y] == 0)
-                    AddPerlinProps(x, y);
-                if (landMap[x, y] == 0)
-                    AddExtraProps(x, y);
-            }
-        }
-        AddLargeProps();
-    }
-    
-    void AddPerlinProps(int x, int y)
-    {
-        foreach (var propParams in perlinPropParams)
-        {
-            float generationChance = Random.Range(0f, propParams.density);
-            if (propParams.PerlinMap[x, y] < generationChance)
-            {
-                MapProp prefab = propParams.prop[Random.Range(0, propParams.prop.Length)];
-                InstantiateMapProp(x, y, prefab);
-                return;
-            }
-        }
-    }
-    
-    void InstantiateMapProp(int xCoord, int yCoord, MapProp prefab)
-    {
-        var propPos = tilemap.CellToWorld(new Vector3Int(xCoord, yCoord, 0));
-
-        var offset = new Vector3(Random.Range(-prefab.maxOffset, prefab.maxOffset),
-            Random.Range(-prefab.maxOffset, prefab.maxOffset));
-
-        MapProp prop = Instantiate(prefab, mapPropsContainer.transform);
-        prop.transform.position = propPos + offset;
-        landMap[xCoord, yCoord] = 2;
-    }
-
-    void AddExtraProps(int x, int y)
-    {
-        foreach (var propParams in propGenerationParams)
-        {
-            bool shouldSpawn = Random.Range(0, 1000) < propParams.density;
-            if (shouldSpawn)
-            {
-                InstantiateMapProp(x, y, propParams.prop);
-                return;
-            }
-        }
-    }
-    void AddLargeProps()
-    {
-        int x;
-        int y;
-        int neighbors;
-        int counter = 0;
-        int limit = width * height;
-
-        foreach (var propParams in largePropParams)
-        {
-            for (int i = 0; i < propParams.numberOfProps; i++)
-            {
-                do
-                {
-                    x = Random.Range(0, width - 1);
-                    y = Random.Range(0, height - 1);
-                    var isCoordOccupied = landMap[x, y] != 0;
-                    neighbors = CellularAutomataMap.GetSurroundingBackgroundCount(landMap, x, y, width, height, propParams.neighborhoodSize);
-                    counter++;
-                    if (!isCoordOccupied && neighbors == 0)
-                        break;
-                } while (counter < limit);
-
-                if (counter < limit)
-                {
-                    MapProp prefab = propParams.prop[Random.Range(0, propParams.prop.Length)];
-                    InstantiateMapProp(x, y, prefab);
-                    MarkSurroundingsAsOccupied(landMap, x, y, propParams.neighborhoodSize);
-                }
-            }
-        }
-    }
-    
-    void MarkSurroundingsAsOccupied(int[,] map, int gridX, int gridY, int neighborhoodSize)
-    {
-        for (int x = gridX - neighborhoodSize; x <= gridX + neighborhoodSize; x++)
-        {
-            for (int y = gridY - neighborhoodSize; x <= gridY + neighborhoodSize; x++)
-            {
-                map[x, y] = 2;
-            }
-        }
-    }
-    
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public static class PerlinNoiseMap
 {
+    
     public static float[,] GenerateMap(int width, int height, float modifier)
     {
         var perlinMap = new float[width, height];
