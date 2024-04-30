@@ -8,13 +8,13 @@ public class LandGenerator
     public bool useRandomSeed;
     public int smoothingSteps;
     [Range(0,100)]
-    public int backgroundPercent;
+    public int waterPercent;
     public int edgeThickness;
 
     public int[,] GenerateMap(int width, int height)
     {
         if(useRandomSeed)
             seed = UnityEngine.Random.Range(0, 1000);
-        return CellularAutomataMap.GenerateMap(width, height, seed, backgroundPercent, smoothingSteps, edgeThickness);
+        return CellularAutomataMap.GenerateMap(width, height, seed, waterPercent, smoothingSteps, edgeThickness);
     }
 }
